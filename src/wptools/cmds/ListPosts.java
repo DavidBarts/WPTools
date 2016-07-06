@@ -15,6 +15,13 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 
+/**
+ * List some posts in reverse chronological order. The scope of the
+ * listing is by default limited.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class ListPosts {
 	private static CommandLine cmdLine;
 	private static Properties props;

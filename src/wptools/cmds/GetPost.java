@@ -19,6 +19,12 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 
 import wptools.lib.*;
 
+/**
+ * Retrieve a post.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class GetPost {
 
 	// Build the map that governs how we format headers.

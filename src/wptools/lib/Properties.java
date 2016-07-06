@@ -12,6 +12,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import org.apache.commons.cli.CommandLine;
 
+/**
+ * Properties, which can come from either a standard properties file
+ * or from command-line options.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class Properties {
 	private static final String DEFAULT_PROPS = "wptools.properties";
 	private java.util.Properties rawProps;

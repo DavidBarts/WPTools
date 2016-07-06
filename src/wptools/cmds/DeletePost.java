@@ -15,6 +15,12 @@ import wptools.lib.Misc;
 import wptools.lib.Options;
 import wptools.lib.Properties;
 
+/**
+ * Delete one or more posts.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class DeletePost {
 	private static CommandLine cmdLine;
 	private static Properties props;

@@ -24,10 +24,10 @@ import java.util.Date;
 import javax.net.ssl.*;
 
 /**
+ * Miscellaneous stuff, not object-oriented.
  * 
  * @author David Barts <david.w.barts@gmail.com>
  *
- * Miscellaneous stuff, not object-oriented.
  */
 public class Misc {
 	private static String myName;

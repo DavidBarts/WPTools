@@ -13,6 +13,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 
+/**
+ * List all known blogs.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class ListBlogs {
 	private static CommandLine cmdLine;
 	private static Properties props;

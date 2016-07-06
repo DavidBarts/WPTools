@@ -15,6 +15,12 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 
 import wptools.lib.*;
 
+/**
+ * Create a new post.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class NewPost {
 	private static CommandLine cmdLine;
 	private static Properties props;

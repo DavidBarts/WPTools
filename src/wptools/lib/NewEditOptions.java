@@ -19,6 +19,7 @@ import org.apache.commons.cli.CommandLine;
 /**
  * Because the NewPost and EditPost commands have lots of options,
  * all in common.
+ * 
  * @author David Barts <david.w.barts@gmail.com>
  *
  */

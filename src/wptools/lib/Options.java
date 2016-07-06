@@ -14,11 +14,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 
 /**
+ * A subclass of the Commons CLI Options class which knows about our
+ * standard options.
  * 
  * @author david.w.barts@gmail.com
  *
- * A subclass of the Commons CLI Options class which knows about our
- * standard options.
  */
 public class Options extends org.apache.commons.cli.Options {
 	

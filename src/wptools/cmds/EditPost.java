@@ -15,6 +15,12 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 
 import wptools.lib.*;
 
+/**
+ * Edit (i.e. update, this is NOT an interactive editor) a post.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class EditPost {
 	private static CommandLine cmdLine;
 	private static Properties props;

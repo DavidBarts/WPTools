@@ -13,6 +13,12 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import wptools.lib.*;
 
+/**
+ * List all known authors.
+ * 
+ * @author David Barts <david.w.barts@gmail.com>
+ *
+ */
 public class ListAuthors {
 	private static CommandLine cmdLine;
 	private static Properties props;
