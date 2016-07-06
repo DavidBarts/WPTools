@@ -1,3 +1,9 @@
+/*
+ * This software is distributed under the Creative Commons Attribution 4.0
+ * International license. See LICENSE.TXT in the main directory of this
+ * repository for more information.
+ */
+
 package wptools.lib;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -6,7 +12,6 @@ import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -16,8 +21,6 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
-
 import javax.net.ssl.*;
 
 /**
