@@ -27,7 +27,6 @@ public class NewPost {
 		// Get client object
 		String url = props.get("url");
 		String username = props.get("username");
-		String password = Misc.getPassword();
 		int blogid = props.getInt("blogid");
 		Misc.disableSslAuth();
 		XmlRpcClient client = null;
@@ -43,6 +42,7 @@ public class NewPost {
 		contentParams.put("post_content", Misc.readBody());
 		
 		// Post the article
+		String password = Misc.getPassword();
 		Object[] params = new Object[] { blogid, username, password, contentParams };
 		String postid = null;
 		try {
