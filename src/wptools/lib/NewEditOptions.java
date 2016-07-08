@@ -116,6 +116,7 @@ public class NewEditOptions extends Options {
 		addOption("properties");
 		addOption("group");
 		// Our special ones
+		addOption(null, "content", true, "File to read post content from.");
 		for (String field : FIELDS) {
 			addOption(null, field, true,
 				"Specify " + optionToField(field) + " field.");

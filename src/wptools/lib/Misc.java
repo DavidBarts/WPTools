@@ -6,12 +6,15 @@
 
 package wptools.lib;
 
+import org.apache.commons.cli.CommandLine;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -194,23 +197,61 @@ public class Misc {
 	}
 	
 	/**
-	 * Read a post body from standard input.
+	 * Read a post body from someplace appropriate.
+	 * @param cmdLine  Parsed command line
 	 * @return         String containing read text
 	 */
-	public static String readBody() {
-		boolean isTty = false;
-		if (System.console() != null) {
-			isTty = true;
-			System.out.println("Enter message, end with EOF or '.' on a line by itself:");
+	public static String readBody(CommandLine cmdLine) {
+		String fileName = cmdLine.getOptionValue("content");
+		if (fileName == null) {
+			if (System.console() == null)
+				return readBodyFromFile(new InputStreamReader(System.in));
+			else
+				return readBodyFromTty();
+		} else {
+			try (FileReader fr = new FileReader(fileName)) {
+				return readBodyFromFile(fr);
+			} catch (IOException e) {
+				Misc.die(e.getMessage());
+			}
 		}
+		return null;  // stupid Java
+	}
+	
+	/**
+	 * Read a post body from a Reader object.
+	 * @return         String containing read text
+	 */
+	private static int BUFSIZE = 1024;
+	private static String readBodyFromFile(Reader rdr) {
+		char[] buf = new char[BUFSIZE];
+		StringBuilder ret = new StringBuilder();
+		try {
+			int nread;
+			while ((nread = rdr.read(buf)) != -1)
+				ret.append(buf, 0, nread);
+		} catch (IOException e) {
+			Misc.die(e.getMessage());
+		}
+		return ret.toString();
+	}
+	
+	/**
+	 * Read a post body from standard input when a TTY.
+	 * @return         String containing read text
+	 */
+	private static String readBodyFromTty() {
+		System.out.println("Enter message, end with EOF or '.' on a line by itself:");
 		String nl = System.lineSeparator();
 		StringBuilder ret = new StringBuilder();
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String line;
 		try {
 			while ((line = br.readLine()) != null) {
-				if (isTty && line.equals("."))
+				if (line.equals("."))
 					break;
+				else if (line.startsWith("."))
+					line = line.substring(1);
 				ret.append(line);
 				ret.append(nl);
 			}

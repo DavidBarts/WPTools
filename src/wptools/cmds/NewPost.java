@@ -51,7 +51,7 @@ public class NewPost {
 		// Build the map of content parameters
 		HashMap<String, Object> contentParams = new HashMap<String, Object>();
 		options.addToMap(contentParams, cmdLine);
-		contentParams.put("post_content", Misc.readBody());
+		contentParams.put("post_content", Misc.readBody(cmdLine));
 		
 		// Post the article
 		String password = Misc.getPassword();

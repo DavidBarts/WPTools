@@ -40,6 +40,10 @@ public class EditPost {
 			Misc.die("expecting a post ID");
 		else if (nargs > 1)
 			Misc.die("expecting only one post ID");
+		
+		// Reject contradictory options
+		if (cmdLine.hasOption("content") && cmdLine.hasOption("no-content"))
+			Misc.die("--content and --no-content are mutually exclusive");
 
 		// Load properties from wherever (file or command line)
 		props = new Properties(cmdLine);
@@ -69,7 +73,7 @@ public class EditPost {
 		HashMap<String, Object> contentParams = new HashMap<String, Object>();
 		options.addToMap(contentParams, cmdLine);
 		if (!cmdLine.hasOption("no-content"))
-			contentParams.put("post_content", Misc.readBody());
+			contentParams.put("post_content", Misc.readBody(cmdLine));
 		else if (!found)
 			Misc.die("warning - no edits specified", 0);
 		
