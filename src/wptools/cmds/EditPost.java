@@ -38,8 +38,6 @@ public class EditPost {
 		int nargs = cmdLine.getArgs().length;
 		if (nargs == 0)
 			Misc.die("expecting a post ID");
-		else if (nargs > 1)
-			Misc.die("expecting only one post ID");
 		
 		// Reject contradictory options
 		if (cmdLine.hasOption("content") && cmdLine.hasOption("no-content"))
