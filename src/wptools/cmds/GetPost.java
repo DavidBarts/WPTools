@@ -6,6 +6,8 @@
 
 package wptools.cmds;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -102,6 +104,7 @@ public class GetPost {
 	private static Properties props;
 	private static int estat;
 	private static String password;
+	private static PrintStream out;
 	
 	public static void main(String[] args) {
 		// Define our name
@@ -116,6 +119,7 @@ public class GetPost {
 		options.addOption("group");
 		options.addOption("bare");
 		options.addOption("f", "full", false, "Display all headers.");
+		options.addOption("o", "output", true, "Write output to specified file.");
 		cmdLine = options.parse(args);
 
 		// Reject attempts to get nothing
@@ -132,6 +136,18 @@ public class GetPost {
 			conn = Misc.xmlRpcService(url);
 		} catch (MalformedURLException e) {
 			Misc.die(e.getMessage());
+		}
+		
+		// Determine output stream.
+		String fileName = cmdLine.getOptionValue("output");
+		if (fileName == null) {
+			out = System.out;
+		} else {
+			try {
+				out = new PrintStream(fileName);
+			} catch (FileNotFoundException|SecurityException e) {
+				Misc.die(e.getMessage());
+			}
 		}
 
 		// List the posts
@@ -182,7 +198,7 @@ public class GetPost {
 		
 		if (!cmdLine.hasOption("bare"))
 			printHeaders(result);
-		System.out.println(result.get(CONTENT_FIELD));
+		out.println(result.get(CONTENT_FIELD));
 	}
 	
 	/**
@@ -201,9 +217,9 @@ public class GetPost {
 				if (hval instanceof String && ((String) hval).length() == 0)
 					hval = "(none)";
 			}
-			System.out.println(headerName(key) + ": " + hval.toString());
+			out.println(headerName(key) + ": " + hval.toString());
 		}
-		System.out.println();
+		out.println();
 	}
 	
 	/**
