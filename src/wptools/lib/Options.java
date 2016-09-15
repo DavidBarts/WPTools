@@ -34,7 +34,9 @@ public class Options extends org.apache.commons.cli.Options {
 		
 	public Options () {
 		super();
+		addOption(null, "accept", true, "Accept only SSL certs with the specified fingerprint.");
 		addOption("?", "help", false, "Print this help message.");
+		addOption(null, "insecure", false, "Disable all SSL authentication.");
 	}
 	
 	public Options addOption(String name) {
@@ -52,6 +54,8 @@ public class Options extends org.apache.commons.cli.Options {
 			(new HelpFormatter()).printHelp(Misc.getMyName(), this);
 			System.exit(0);
 		}
+		if (ret.hasOption("accept") && ret.hasOption("insecure"))
+			Misc.die("--accept and --insecure are mutually exclusive", 2);
 		return ret;
 	}
 }

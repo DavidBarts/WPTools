@@ -133,7 +133,7 @@ public class GetPost {
 		XmlRpcClient conn = null;
 		String url = props.get("url");
 		try {
-			conn = Misc.xmlRpcService(url);
+			conn = Misc.xmlRpcService(url, props, cmdLine);
 		} catch (MalformedURLException e) {
 			Misc.die(e.getMessage());
 		}
@@ -152,7 +152,6 @@ public class GetPost {
 
 		// List the posts
 		estat = 0;
-		Misc.disableSslAuth();
 		password = Misc.getPassword();
 		boolean needblank = false;
 		for (String rpostid : cmdLine.getArgs()) {

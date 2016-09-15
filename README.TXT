@@ -113,5 +113,35 @@ the environment variable.
 
 * How do I do certificate management for HTTPS?
 
-Currently you don't. Certs are always blindly trusted. This is a deficiency
-that should be fixed.
+(Note that all the normal root-level certificates are already known to Java and
+should be followed properly by default. This question and the one following
+typically only come into play when you're attempting to make WPTools accept a
+certificate it otherwise normally would refuse, such as a self-signed one.)
+
+Generally, the same way you do for any other Java program, which is alas
+something of a pain. What you need to do is use keytool (a command-line utility
+distributed with Java) to add the certificate in question to your
+$JAVA_HOME/jre/lib/security/cacerts file. If you don't have the permission to
+write to that file, then you need to create a certificate store file of your
+own and use the -Djavax.net.ssl.trustStore=path option to point Java to it.
+
+See
+https://azure.microsoft.com/en-us/documentation/articles/java-add-certificate-ca-store/
+for more information.
+
+* Are there any easier alternatives?
+
+Yes, you can use the --accept option (or the accept property in
+wptools.properties) to specify an MD5, SHA1, or SHA256 fingerprint (in
+hexadecimal, with or without colons between the bytes). If the certiticate the
+server presents has in its chain one whose fingerprint matches the specified
+one, the certificate will be accepted. Probably the easiest way to find your
+server's certificate fingerprints is to use a web browser to navigate to it then
+to view the certificate. The following UNIX shell command will also print the
+fingerprints of a server's certificate (replace server with the name of the
+server):
+openssl s_client -connect server:443 < /dev/null | keytool -printcert
+
+If you're *really* lazy, then you can use the --insecure option to bypass SSL
+certificate authentication altogether. Note that this is, well, insecure.
+

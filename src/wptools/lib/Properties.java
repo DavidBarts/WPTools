@@ -48,13 +48,17 @@ public class Properties {
 		String ret = rawCmdLine.getOptionValue(key);
 		if (ret != null)
 			return ret;
-		String group = rawCmdLine.getOptionValue("group");
-		ret = rawProps.getProperty(group == null ? key : group + "." + key);
+		ret = doGet(key);
 		if (ret == null)
 			Misc.die(key + " not specified anywhere!");
 		return ret;
 	}
 	
+	private String doGet(String key) {
+		String group = rawCmdLine.getOptionValue("group");
+		return rawProps.getProperty(group == null ? key : group + "." + key);
+	}
+
 	public int getInt(String key) {
 		String ret = get(key);
 		try {
@@ -63,6 +67,10 @@ public class Properties {
 			Misc.die(String.format("invalid value for property %s: %s", key, ret));
 		}
 		return 0;  /* not reached */
+	}
+
+	public boolean hasKey(String key) {
+		return rawCmdLine.getOptionValue(key) != null || doGet(key) != null;
 	}
 }
 

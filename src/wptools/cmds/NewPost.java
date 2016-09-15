@@ -40,10 +40,9 @@ public class NewPost {
 		String url = props.get("url");
 		String username = props.get("username");
 		int blogid = props.getInt("blogid");
-		Misc.disableSslAuth();
 		XmlRpcClient client = null;
 		try {
-		    client = Misc.xmlRpcService(url);
+		    client = Misc.xmlRpcService(url, props, cmdLine);
 		} catch (MalformedURLException e) {
 			Misc.die(e.getMessage());
 		}

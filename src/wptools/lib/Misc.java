@@ -18,11 +18,14 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyManagementException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import javax.net.ssl.*;
 
@@ -35,6 +38,11 @@ import javax.net.ssl.*;
 public class Misc {
 	private static String myName;
 	
+	/* lengths of the various fingerprint types we support, in bytes */
+	private static final int MD5_LEN = 16;
+	private static final int SHA1_LEN = 20;
+	private static final int SHA256_LEN = 32;
+
 	public static String getMyName() {
 		return myName;
 	}
@@ -70,29 +78,68 @@ public class Misc {
 	}
 	
 	/**
-	 * XXX - Disable all SSL authentication. Should be replaced by actual key management.
-	 * Cribbed from https://ws.apache.org/xmlrpc/ssl.html
-	 * @throws NoSuchAlgorithmException 
+	 * Bypass the normal SSL certificate authentication. If the passed
+	 * fingerprint is null, bypasses all authentication (dangerous).
+	 * Else trust anything whose chain contains a cert with the specified
+	 * fingerprint.
+	 * @param fing		Fingerprint
 	 */
-	public static void disableSslAuth() {
-	    // Create a trust manager that does not validate certificate chains
-	    TrustManager[] trustAllCerts = new TrustManager[] {
-	        new X509TrustManager() {
-	            public X509Certificate[] getAcceptedIssuers() {
-	                return null;
-	            }
+	public static void bypassSslAuth(final byte[] fing) {
+		// Determine fingerprint type from its length
+		final String type;
+		if (fing == null) {
+			type = null;
+		} else {
+			switch (fing.length) {
+				case MD5_LEN:
+					type = "MD5";
+					break;
+				case SHA1_LEN:
+					type = "SHA-1";
+					break;
+				case SHA256_LEN:
+					type = "SHA-256";
+					break;
+				default:
+					throw new IllegalArgumentException("Invalid hash.");
+			}
+		}
+
+	    // Create a trust manager
+		TrustManager[] trustAllCerts = new TrustManager[] {
+			new X509TrustManager() {
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+
+				public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+					matchFing(certs);
+				}
+
+				public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+					matchFing(certs);
+				}
+
+				private void matchFing(X509Certificate[] certs) throws CertificateException {
+					if (fing == null)
+						return;
+					MessageDigest md = null;
+					try {
+						md = MessageDigest.getInstance(type);
+					} catch (NoSuchAlgorithmException e) {
+						throw new CertificateException(e);
+					}
+					for (X509Certificate cert: certs) {
+						md.reset();
+						if (Arrays.equals(md.digest(cert.getEncoded()), fing))
+							return;
+					}
+					throw new CertificateException("No matching fingerprint found.");
+				}
+			}
+		};
 	 
-	            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-	                // Trust always
-	            }
-	 
-	            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-	                // Trust always
-	            }
-	        }
-	    };
-	 
-	    // Install the all-trusting trust manager
+	    // Install the trust manager
 	    SSLContext sc = null;
 		try {
 			sc = SSLContext.getInstance("SSL");
@@ -121,14 +168,34 @@ public class Misc {
 	 * @param The URL, as a string.
 	 * @throws MalformedURLException 
 	 */
-	public static XmlRpcClient xmlRpcService(String url) throws MalformedURLException {
+	public static XmlRpcClient xmlRpcService(String url, Properties props, CommandLine cmdLine) throws MalformedURLException {
 		XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 		config.setServerURL(new URL(url));
 		XmlRpcClient client = new XmlRpcClient();
 		client.setConfig(config);
+		if (cmdLine.hasOption("insecure"))
+			bypassSslAuth(null);
+		else if (props.hasKey("accept"))
+			bypassSslAuth(parseFing(props.get("accept")));
 		return client;
 	}
 	
+	private static byte[] parseFing(String s) {
+		String s2 = s.replaceAll(":", "");
+		int len = s2.length();
+		if (len != MD5_LEN*2 && len != SHA1_LEN*2 && len != SHA256_LEN*2)
+			Misc.die("bad fingerprint: " + s);
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			int v0 = Character.digit(s2.charAt(i), 16);
+			int v1 = Character.digit(s2.charAt(i+1), 16);
+			if (v0 < 0 || v1 < 0)
+				Misc.die("bad fingerprint: " + s);
+			data[i/2] = (byte) ((v0 << 4) | v1);
+		}
+		return data;
+	}
+
 	/**
 	 * Get the password to use; look at environment first.
 	 * @return A string containing the password.

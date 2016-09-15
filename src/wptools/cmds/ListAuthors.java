@@ -43,13 +43,12 @@ public class ListAuthors {
 		XmlRpcClient conn = null;
 		String url = props.get("url");
 		try {
-			conn = Misc.xmlRpcService(url);
+			conn = Misc.xmlRpcService(url, props, cmdLine);
 		} catch (MalformedURLException e) {
 			Misc.die(e.getMessage());
 		}
 		
 		// Issue query
-		Misc.disableSslAuth();
 		int blogid = props.getInt("blogid");
 		Object[] params = new Object[] { blogid, props.get("username"),
 				Misc.getPassword() };
