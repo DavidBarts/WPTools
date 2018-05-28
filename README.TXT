@@ -61,6 +61,7 @@ GetPost - retrieve one or more posts
 NewPost - create a new post
 EditPost - modify an existing post
 DeletePost - delete one or more existing posts
+FragToHtml - convert HTML fragment used by NewPost/EditPost to HTML document
 
 * How do I run a command?
 
@@ -144,4 +145,3 @@ openssl s_client -connect server:443 < /dev/null | keytool -printcert
 
 If you're *really* lazy, then you can use the --insecure option to bypass SSL
 certificate authentication altogether. Note that this is, well, insecure.
-

@@ -204,7 +204,7 @@ public class Misc {
 		String ret = System.getenv("WPTOOLS_PASS");
 		if (ret != null)
 			return ret;
-		return new String(System.console().readPassword("Password: ", null));
+		return new String(System.console().readPassword("Password: ", (Object) null));
 	}
 	
 	/**
