@@ -6,6 +6,8 @@
 
 package wptools.cmds;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 
 import org.apache.commons.cli.Option;
@@ -27,6 +29,7 @@ import wptools.lib.*;
  */
 public class FragToHtml {
     private static CommandLine cmdLine;
+    private static PrintStream out;
 
     public static void main(String[] args) {
         // Define our name
@@ -36,6 +39,7 @@ public class FragToHtml {
         org.apache.commons.cli.Options options = new org.apache.commons.cli.Options();
         options.addOption("?", "help", false, "Print this help message.");
         options.addOption(null, "content", true, "File to read post content from.");
+        options.addOption("o", "output", true, "Write output to specified file.");
         options.addOption(null, "title", true, "Specify post title.");
         try {
             cmdLine = ((new DefaultParser()).parse(options, args));
@@ -47,6 +51,18 @@ public class FragToHtml {
             System.exit(0);
         }
 
+        // Determine output stream.
+        String fileName = cmdLine.getOptionValue("output");
+        if (fileName == null) {
+            out = System.out;
+        } else {
+            try {
+                out = new PrintStream(fileName);
+            } catch (FileNotFoundException|SecurityException e) {
+                Misc.die(e.getMessage());
+            }
+        }
+
         // Get post title
         String title = cmdLine.getOptionValue("title");
         if (title == null)
@@ -54,16 +70,16 @@ public class FragToHtml {
         title = htmlEncode(title);
 
         // Emit HTML
-        System.out.println("<html>");
-        System.out.println("  <head>");
-        System.out.println("    <meta http-equiv=\"content-type\" content=\"text/html; charset="
+        out.println("<html>");
+        out.println("  <head>");
+        out.println("    <meta http-equiv=\"content-type\" content=\"text/html; charset="
             + Charset.defaultCharset().name() +"\"/>");
-        System.out.println("    <title>Preview of " + title + "</title>");
-        System.out.println("  </head><body>");
-        System.out.println("    <h1>" + title + "</h1>");
+        out.println("    <title>Preview of " + title + "</title>");
+        out.println("  </head><body>");
+        out.println("    <h1>" + title + "</h1>");
         emitBody(Misc.readBody(cmdLine));
-        System.out.println("  </body>");
-        System.out.println("</html>");
+        out.println("  </body>");
+        out.println("</html>");
     }
 
     private static String htmlEncode(String raw) {
@@ -113,7 +129,7 @@ public class FragToHtml {
             gsub(buf, "\n", localNl);
 
         // Emit the output.
-        System.out.print(buf.toString());
+        out.print(buf.toString());
     }
 
     private static void gsub(StringBuilder buf, String old, String repl) {
