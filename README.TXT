@@ -137,11 +137,8 @@ wptools.properties) to specify an MD5, SHA1, or SHA256 fingerprint (in
 hexadecimal, with or without colons between the bytes). If the certiticate the
 server presents has in its chain one whose fingerprint matches the specified
 one, the certificate will be accepted. Probably the easiest way to find your
-server's certificate fingerprints is to use a web browser to navigate to it then
-to view the certificate. The following UNIX shell command will also print the
-fingerprints of a server's certificate (replace server with the name of the
-server):
-openssl s_client -connect server:443 < /dev/null | keytool -printcert
+server's certificate fingerprints is to use the DumpCerts command in this
+package (many browsers will also let you view a certificate).
 
 If you're *really* lazy, then you can use the --insecure option to bypass SSL
 certificate authentication altogether. Note that this is, well, insecure.
