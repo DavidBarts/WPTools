@@ -37,7 +37,7 @@ public class DumpCerts {
 
     public static void main(String[] args) {
         // Define our name
-        Misc.setMyName("NewPost");
+        Misc.setMyName("DumpCerts");
 
         // Parse command-line options
         if (args.length != 1)
@@ -144,6 +144,8 @@ public class DumpCerts {
     }
 
     private static void dumpCert(X509Certificate cert) {
+        System.out.println("Serial No.: " +
+            formatFing(cert.getSerialNumber().toByteArray()));
         try {
             for (String ftype : FTYPES) {
                 MessageDigest md = MessageDigest.getInstance(ftype);
@@ -160,4 +162,3 @@ public class DumpCerts {
             cert.getNotBefore(), cert.getNotAfter());
     }
 }
-
