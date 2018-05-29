@@ -41,7 +41,7 @@ public class DumpCerts {
 
         // Parse command-line options
         if (args.length != 1)
-            Misc.die("expecting URL", 2);
+            Misc.die("syntax error", 2);
         if ("-?".equals(args[0]) || "--help".equals(args[0])) {
             System.out.format("usage: %s -?|--help|url%n", Misc.getMyName());
             System.out.println(" -?,--help               Print this help message.");
