@@ -134,7 +134,7 @@ for more information.
 
 Yes, you can use the --accept option (or the accept property in
 wptools.properties) to specify an MD5, SHA1, or SHA256 fingerprint (in
-hexadecimal, with or without colons between the bytes). If the certiticate the
+hexadecimal, with or without colons between the bytes). If the certificate the
 server presents has in its chain one whose fingerprint matches the specified
 one, the certificate will be accepted. Probably the easiest way to find your
 server's certificate fingerprints is to use the DumpCerts command in this
