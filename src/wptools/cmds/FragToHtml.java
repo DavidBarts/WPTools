@@ -134,7 +134,7 @@ public class FragToHtml {
 
     private static void gsub(StringBuilder buf, String old, String repl) {
         int len = old.length();
-        int delta = repl.length() - len + 1;
+        int delta = repl.length();
         int pos = 0;
         while (true) {
             pos = buf.indexOf(old, pos);
